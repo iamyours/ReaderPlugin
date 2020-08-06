@@ -1,5 +1,6 @@
 package com.iamyours.reader;
 
+import com.iamyours.reader.util.FileUtil;
 import com.iamyours.reader.vo.ChapterVO;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
@@ -143,7 +144,9 @@ public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
     private void addBook(String path) {
         if (path == null) return;
         File file = new File(path);
+        fileCharset = FileUtil.getFilecharset(file);
         fileNameText.setText(path);
+        model.removeAllElements();
         model.addElement("loading chapters...");
         new Thread(() -> {
             try {
@@ -181,6 +184,8 @@ public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
     RandomAccessFile accessFile;
 
     private void selectChapter() {
+        if (currentChapterIndex == -1) return;
+        if (currentChapterIndex >= chapterList.size()) return;
         ChapterVO vo = chapterList.get(currentChapterIndex);
         try {
             accessFile.seek(vo.seek);
@@ -195,7 +200,7 @@ public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
         try {
             String str = accessFile.readLine();
             if (str != null) {
-                return new String(str.getBytes(CHARSET));
+                return new String(str.getBytes(CHARSET), fileCharset);
             }
 
 
@@ -216,6 +221,8 @@ public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
 
     private static final String CHARSET = "ISO-8859-1";
 
+    private String fileCharset;
+
 
     //定时事件
     @Override
@@ -229,18 +236,18 @@ public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
         long t = System.currentTimeMillis();
         accessFile = new RandomAccessFile(file, "r");
         String line = null;
-
+        chapterList.clear();
         while (true) {
             long seek = accessFile.getFilePointer();
             line = accessFile.readLine();
             if (line == null) break;
-            String text = new String(line.getBytes(CHARSET));
+            String text = new String(line.getBytes(CHARSET), fileCharset);
             String title = getChapterTitle(text);
             if (title != null) chapterList.add(new ChapterVO(title, seek));
         }
 
         long time = System.currentTimeMillis() - t;
-        System.out.println("load " + chapterList.size() + " in " + time + "ms");
+        System.out.println("load " + chapterList.size() + " chapters in " + time + "ms");
         SwingUtilities.invokeLater(() -> {
             model.removeAllElements();
             for (ChapterVO c : chapterList) {

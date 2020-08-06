@@ -1,11 +1,15 @@
 package com.iamyours.reader.test;
 
+import com.iamyours.reader.util.FileUtil;
+
 import java.io.*;
 
 public class FileTest {
     public static void main(String[] args) {
-        String path = "/Users/yanxx/Downloads/27694.txt";
-        randomAccessFile(path);
+        String path = "/Users/yanxx/Downloads/test.txt";
+        String charset = FileUtil.getFilecharset(new File(path));
+        System.out.println(charset);
+        randomAccessFile(path,charset);
 //        try {
 //            FileInputStream fis = new FileInputStream(new File(path));
 //
@@ -21,13 +25,13 @@ public class FileTest {
 //        }
     }
 
-    private static void randomAccessFile(String path) {
+    private static void randomAccessFile(String path,String charset) {
         try {
             RandomAccessFile rf = new RandomAccessFile(path, "r");
             String line;
             int count = 0;
             while ((line = rf.readLine()) != null) {
-                System.out.println(new String(line.getBytes("ISO-8859-1")));
+                System.out.println(new String(line.getBytes("ISO-8859-1"),charset));
                 System.out.println(rf.getFilePointer());
                 System.out.println("----------");
                 if (count++ > 10) break;

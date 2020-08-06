@@ -5,10 +5,10 @@ package com.iamyours.reader.vo;
  */
 public class ChapterVO {
     public String name;
-    public long seek;
+    public int index;
 
-    public ChapterVO(String name, long seek) {
+    public ChapterVO(String name, int seek) {
         this.name = name;
-        this.seek = seek;
+        this.index = seek;
     }
 }

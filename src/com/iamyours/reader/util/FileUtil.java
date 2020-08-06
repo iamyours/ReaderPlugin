@@ -1,11 +1,10 @@
 package com.iamyours.reader.util;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
 
 public class FileUtil {
-    public static  String getFilecharset(File sourceFile) {
+
+    public static String getFileCharset(File sourceFile) {
         String charset = "GBK";
         byte[] first3Bytes = new byte[3];
         try {
@@ -65,5 +64,28 @@ public class FileUtil {
             e.printStackTrace();
         }
         return charset;
+    }
+
+    public static long getFileSize(File file) {
+        if (file.exists() && file.isFile()) {
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(file);
+                return fis.getChannel().size();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return 0;
     }
 }

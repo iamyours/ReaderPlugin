@@ -7,6 +7,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -18,9 +19,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
@@ -50,6 +53,8 @@ public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
 
     JScrollPane chapterPanel = new JScrollPane();
     private ArrayList<ChapterVO> chapterList = new ArrayList<>();
+    private String content;
+    private int currentIndex = 0;
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -116,25 +121,21 @@ public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
     private void checkCurrentChapter() {
         if (currentChapterIndex < chapterList.size() - 2) {
             ChapterVO next = chapterList.get(currentChapterIndex + 1);
-            try {
-                if (accessFile.getFilePointer() > next.seek) {
-                    chapterJList.setSelectedIndex(currentChapterIndex + 1);
-                    chapterJList.ensureIndexIsVisible(chapterJList.getSelectedIndex());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (currentIndex > next.index) {
+                chapterJList.setSelectedIndex(currentChapterIndex + 1);
+                chapterJList.ensureIndexIsVisible(chapterJList.getSelectedIndex());
             }
         }
     }
 
-    private int maxLineCount = 4;
+    private int maxLineCount = 3;
 
     private String readContent() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < maxLineCount; ) {
             String line = readLine();
             if ("".equals(line.trim())) continue;
-            sb.append(line).append("\n");
+            sb.append(line);
             i++;
         }
         return sb.toString();
@@ -144,7 +145,7 @@ public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
     private void addBook(String path) {
         if (path == null) return;
         File file = new File(path);
-        fileCharset = FileUtil.getFilecharset(file);
+        fileCharset = FileUtil.getFileCharset(file);
         fileNameText.setText(path);
         model.removeAllElements();
         model.addElement("loading chapters...");
@@ -181,33 +182,21 @@ public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
         chapterPanel = new JScrollPane(chapterJList);
     }
 
-    RandomAccessFile accessFile;
-
     private void selectChapter() {
         if (currentChapterIndex == -1) return;
         if (currentChapterIndex >= chapterList.size()) return;
         ChapterVO vo = chapterList.get(currentChapterIndex);
-        try {
-            accessFile.seek(vo.seek);
-            readNext();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        currentIndex = vo.index;
+        readNext();
     }
 
     private String readLine() {
-        if (accessFile == null) return "";
-        try {
-            String str = accessFile.readLine();
-            if (str != null) {
-                return new String(str.getBytes(CHARSET), fileCharset);
-            }
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
+        if (currentIndex + 1 >= content.length()) return "";
+        int index = content.indexOf("\n", currentIndex + 1);
+        if (index == -1) return "";
+        String result = content.substring(currentIndex, index);
+        currentIndex = index;
+        return result;
     }
 
     private static String openFile() {
@@ -234,18 +223,12 @@ public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
     // 查询总行数
     public void loadChapters(File file) throws IOException {
         long t = System.currentTimeMillis();
-        accessFile = new RandomAccessFile(file, "r");
-        String line = null;
+        content = IOUtils.toString(new FileReader(file));
+        Matcher match = chapterPattern.matcher(content);
         chapterList.clear();
-        while (true) {
-            long seek = accessFile.getFilePointer();
-            line = accessFile.readLine();
-            if (line == null) break;
-            String text = new String(line.getBytes(CHARSET), fileCharset);
-            String title = getChapterTitle(text);
-            if (title != null) chapterList.add(new ChapterVO(title, seek));
+        while (match.find()) {
+            chapterList.add(new ChapterVO(match.group(1), match.start()));
         }
-
         long time = System.currentTimeMillis() - t;
         System.out.println("load " + chapterList.size() + " chapters in " + time + "ms");
         SwingUtilities.invokeLater(() -> {
@@ -257,7 +240,7 @@ public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
 
     }
 
-    private static Pattern chapterPattern = Pattern.compile("^第\\S+章\\s\\S+$");
+    private static Pattern chapterPattern = Pattern.compile("(第\\S+章\\s\\S+\\s)");
 
     private String getChapterTitle(String line) {
         if (chapterPattern.matcher(line).matches()) return line;

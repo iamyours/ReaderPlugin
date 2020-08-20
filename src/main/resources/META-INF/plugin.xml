@@ -1,0 +1,37 @@
+<idea-plugin>
+    <id>com.iamyours.reader.plugin</id>
+    <name>ReaderPlugin</name>
+    <vendor email="roger2015yxx@gmail.com" url="https://github.com/iamyours/ReaderPlugin">ReaderPlugin</vendor>
+
+    <description><![CDATA[ test ]]></description>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <runLineMarkerContributor language="JAVA" implementationClass="com.iamyours.reader.run.FishLineMarker"/>
+        <runConfigurationProducer implementation="com.iamyours.reader.run.FishProducer"/>
+        <configurationType implementation="com.iamyours.reader.run.FishConfigType"/>
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+        <action id="show-main" class="com.iamyours.reader.action.ShowMain" text="show main" description="show main">
+            <add-to-group group-id="WindowMenu" anchor="last"/>
+        </action>
+        <action id="reader.NextAction" class="com.iamyours.reader.action.NextAction"
+                text="Next" description="Read next" icon="ReaderIcons.NEXT">
+        </action>
+        <action id="reader.Passed" class="com.iamyours.reader.action.DefaultAction"
+                text="ShowPassed" description="Show Passed" icon="ReaderIcons.PASSED">
+        </action>
+
+        <group id="reader.TextArea">
+            <reference id="reader.NextAction"/>
+            <separator/>
+        </group>
+    </actions>
+</idea-plugin>

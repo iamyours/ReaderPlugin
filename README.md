@@ -12,10 +12,10 @@ txt文本阅读器插件gradle版本
 #### 效果
 ![](https://raw.githubusercontent.com/iamyours/ReaderPlugin/master/imgs/linemarker.png)
 
-![](ttps://raw.githubusercontent.com/iamyours/ReaderPlugin/master/imgs/run-configuration.png)
+![](https://raw.githubusercontent.com/iamyours/ReaderPlugin/master/imgs/run-configuration.png)
 
-![](ttps://raw.githubusercontent.com/iamyours/ReaderPlugin/master/imgs/edit-configuration.png)
+![](https://raw.githubusercontent.com/iamyours/ReaderPlugin/master/imgs/edit-configuration.png)
 
-![](ttps://raw.githubusercontent.com/iamyours/ReaderPlugin/master/imgs/run-console.png)
+![](https://raw.githubusercontent.com/iamyours/ReaderPlugin/master/imgs/run-console.png)
 
 

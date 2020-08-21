@@ -10,12 +10,12 @@ txt文本阅读器插件gradle版本
 - [x] **通过编辑`Run Configuration`修改方法阅读参数**
 
 #### 效果
-![](https://github.com/iamyours/ReaderPlugin/master/imgs/linemarker.png)
+![](https://raw.githubusercontent.com/iamyours/ReaderPlugin/master/imgs/linemarker.png)
 
-![](https://github.com/iamyours/ReaderPlugin/master/imgs/run-configuration.png)
+![](ttps://raw.githubusercontent.com/iamyours/ReaderPlugin/master/imgs/run-configuration.png)
 
-![](https://github.com/iamyours/ReaderPlugin/master/imgs/edit-configuration.png)
+![](ttps://raw.githubusercontent.com/iamyours/ReaderPlugin/master/imgs/edit-configuration.png)
 
-![](https://github.com/iamyours/ReaderPlugin/master/imgs/run-console.png)
+![](ttps://raw.githubusercontent.com/iamyours/ReaderPlugin/master/imgs/run-console.png)
 
 

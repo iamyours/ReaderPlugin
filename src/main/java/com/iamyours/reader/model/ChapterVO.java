@@ -27,9 +27,6 @@ public class ChapterVO {
 
     @Override
     public String toString() {
-        return "ChapterVO{" +
-                "index=" + index +
-                ", name='" + name + '\'' +
-                '}';
+        return name;
     }
 }

@@ -17,12 +17,11 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-//    setPlugins("java")
-//    version = '2020.2'
+    version = '2020.2'
     downloadSources = false
-//    plugins = ['java']
+    plugins = ['java']
     updateSinceUntilBuild false
-    localPath "/Users/yanxx/Desktop/soft/ideaIC-2018.2.4"
+//    localPath "/Users/yanxx/Desktop/soft/ideaIC-2018.2.4"
 }
 patchPluginXml {
     changeNotes """

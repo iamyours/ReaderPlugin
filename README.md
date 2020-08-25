@@ -18,4 +18,3 @@ txt文本阅读器插件gradle版本
 
 ![](https://raw.githubusercontent.com/iamyours/ReaderPlugin/master/imgs/run-console.png)
 
-

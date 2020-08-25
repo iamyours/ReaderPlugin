@@ -19,9 +19,6 @@
 
     <actions>
         <!-- Add your actions here -->
-        <action id="show-main" class="com.iamyours.reader.action.ShowMain" text="show main" description="show main">
-            <add-to-group group-id="WindowMenu" anchor="last"/>
-        </action>
         <action id="reader.NextAction" class="com.iamyours.reader.action.NextAction"
                 text="Next" description="Read next" icon="ReaderIcons.NEXT">
         </action>

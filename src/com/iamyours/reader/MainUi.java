@@ -118,10 +118,13 @@ public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
         checkCurrentChapter();
     }
 
+    private boolean noNeedSelect = false;
+
     private void checkCurrentChapter() {
         if (currentChapterIndex < chapterList.size() - 2) {
             ChapterVO next = chapterList.get(currentChapterIndex + 1);
             if (currentIndex > next.index) {
+                noNeedSelect = true;
                 chapterJList.setSelectedIndex(currentChapterIndex + 1);
                 chapterJList.ensureIndexIsVisible(chapterJList.getSelectedIndex());
             }
@@ -175,6 +178,10 @@ public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
                 int index = chapterJList.getSelectedIndex();
                 if (index != currentChapterIndex) {
                     currentChapterIndex = index;
+                    if (noNeedSelect) {
+                        noNeedSelect = false;
+                        return;
+                    }
                     selectChapter();
                 }
             }

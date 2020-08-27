@@ -8,6 +8,7 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -131,13 +132,13 @@ public class MainUi implements ToolWindowFactory, ActionListener, KeyListener {
         }
     }
 
-    private int maxLineCount = 3;
+    private int maxLineCount = 4;
 
     private String readContent() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < maxLineCount; ) {
             String line = readLine();
-            if ("".equals(line.trim())) continue;
+            if ("".equals(StringUtils.trim(line))) continue;
             sb.append(line);
             i++;
         }
